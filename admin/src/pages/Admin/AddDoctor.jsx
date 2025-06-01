@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import { assets } from '../../assets/assets'
 import { AdminContext } from '../../context/AdminContext';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 function AddDoctor() {
 
@@ -34,6 +35,7 @@ function AddDoctor() {
         formData.append('password', password);
         formData.append('fees', Number(fees));
         formData.append('about', about);
+        formData.append('experience', experience);
         formData.append('speciality', speciality);
         formData.append('degree', degree);
         formData.append('address', JSON.stringify({
@@ -42,8 +44,33 @@ function AddDoctor() {
         }))
 
         
-      } catch (error) {
+
         
+        const {data} = await axios.post(`${backendUrl}/api/v1/admin/add-doctor`, formData, {
+          headers: {adminToken: adminToken}
+        })
+
+        if(data.success){
+          toast.success(data.message)
+           
+          setDocImg(false);
+          setName('');
+          setEmail('');
+          setPassword('');
+          setFees('');
+          setAbout('');
+          setExperience('');
+          setSpeciality('');
+          setDegree('');
+          setAddress1('');
+          setAddress2('');
+
+        }else{
+           toast.error(data.message)
+        }
+      } catch (error) {
+          toast.error(error.message);
+          console.log(error.message);
       }
 
  }
