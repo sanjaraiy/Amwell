@@ -22,17 +22,7 @@ const addDoctor = async (req, res) => {
 
     const imageFile = req.file;
     
-    console.log({
-        name,
-        email,
-        password,
-        speciality,
-        degree,
-        experience,
-        about,
-        fees,
-        address,
-      });
+   
     
 
     if (
@@ -90,18 +80,17 @@ const addDoctor = async (req, res) => {
       date: Date.now()
     }
     
-    console.log(doctorData);
+   
 
     const newDoctor = new Doctor(doctorData);
 
   const addedDoctor = await newDoctor.save();
    
   
-  console.log(addedDoctor)
 
    res.json({
     success: true, 
-    message: "Doctor is successfulyy added",
+    message: "Doctor is successfully added",
     addedDoctor
    })
 
@@ -155,4 +144,22 @@ const loginAdmin = async (req, res) => {
    }
 }
 
-export { addDoctor, loginAdmin };
+// Get all doctors
+const allDoctors = async (req, res) => {
+   try {
+      const doctors = await Doctor.find({}).select("-password");
+      
+      res.status(200).json({
+        success: true,
+        doctors
+      })
+
+   } catch (error) {
+       console.log(error);
+       res.status(500).json({
+        success: false,
+        message: error.message
+       })
+   }
+}
+export { addDoctor, loginAdmin , allDoctors};
