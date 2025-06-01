@@ -3,6 +3,7 @@ import cors from 'cors';
 
 
 import adminRoutes from './routes/adminRoute.js';
+import doctorRoutes from './routes/doctorRoute.js';
 
 
 //app config
@@ -15,6 +16,7 @@ app.use(express.json());
 
 //api routes
 app.use('/api/v1/admin', adminRoutes);
+app.use('/api/v1/doctor', doctorRoutes);
 
 
 
