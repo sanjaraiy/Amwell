@@ -5,14 +5,14 @@ import { toast } from 'react-toastify';
 export const AdminContext = createContext();
 
 const AdminContextProvider = (props) => {
-   
+    
    
   
 
     const [adminToken, setAdminToken] = useState(localStorage.getItem('adminToken') ? localStorage.getItem('adminToken') : '');
     const [doctors, setDoctors] = useState([]);
     const [appointments, setAppointments] = useState([]);
-
+    const [dashboardData, setDashboardData] = useState([]);
 
     const backendUrl = import.meta.env.VITE_BACKEND_URL
 
@@ -74,7 +74,7 @@ const AdminContextProvider = (props) => {
     const cancelAppointment = async (appointmentId) => {
         try {
          const {data} = await axios.post(backendUrl + '/api/v1/admin/cancel-appointment', {appointmentId}, {
-            headers: {aToken}
+            headers: {adminToken}
          })
 
          if(data.success){
@@ -88,6 +88,22 @@ const AdminContextProvider = (props) => {
         }
     }
 
+    const getDashData = async () => {
+       try {
+          const {data} = await axios.get(backendUrl + '/api/v1/admin/dashboard', {
+            headers: {adminToken}
+          })
+
+          if(data.success){
+             setDashboardData(data.dashData);
+             console.log(data.dashData);
+          }else{
+             toast.error(data.message);
+          }
+       } catch (error) {
+         toast.error(data.message);
+       }
+    }
 
    const value = {
        adminToken,
@@ -99,7 +115,9 @@ const AdminContextProvider = (props) => {
        appointments,
        setAppointments,
        getAllAppointments,
-       cancelAppointment
+       cancelAppointment,
+       dashboardData,
+       getDashData
       
    }
 
