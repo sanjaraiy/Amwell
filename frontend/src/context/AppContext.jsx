@@ -16,6 +16,7 @@ const AppContextProvider = (props) => {
     const [token, setToken] = useState(localStorage.getItem('token') ? localStorage.getItem('token') : false);
     const [userData, setUserData] = useState(false);
 
+
     const getDoctorsData = async () => {
       try {
           
@@ -34,14 +35,16 @@ const AppContextProvider = (props) => {
 
     const loadUserProfileData = async () => {
        try {
-           const {data} = await axios.get(backendUrl + '/api/user/get-profile', {header: {token}});
+           const {data} = await axios.get(backendUrl + '/api/v1/user/get-profile', 
+            {headers: {token}
+         });
            if(data.success){
             setUserData(data.userData);
            }else{
               toast.error(data.message)
            }
        } catch (error) {
-          console.log(error);
+          console.log(error.message);
           toast.error(error.message);
        }
     }
