@@ -1,94 +1,126 @@
+import axios from "axios";
 import { createContext, useState } from "react";
 import { toast } from "react-toastify";
 
 export const DoctorContext = createContext();
 
 const DoctorContextProvider = (props) => {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-   const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const [doctorToken, setDoctorToken] = useState(
+    localStorage.getItem("doctorToken")
+      ? localStorage.getItem("doctorToken")
+      : ""
+  );
+  const [appointments, setAppointments] = useState([]);
+  const [dashData, setDashData] = useState(false);
 
-   const [doctorToken, setDoctorToken] = useState(localStorage.getItem('doctorToken') ? localStorage.getItem('doctorToken') : '');
-  const [appointments, setAppointments]  = useState([]);
 
   const getAppointments = async () => {
     try {
-      const {data} = await axios.get(backendUrl  + '/api/v1/doctor/doctor-appointments', {
-        headers: {doctorToken}
-      })
+      const { data } = await axios.get(
+        backendUrl + "/api/v1/doctor/doctor-appointments",
+        {
+          headers: { doctorToken },
+        }
+      );
 
-      if(data.success){
-         setAppointments(data.appointments.reverse());
-         console.log(data.appointments.reverse());
-
-      }else{
-         toast.error(data.message);
+      if (data.success) {
+        setAppointments(data.appointments);
+        console.log(data.appointments);
+      } else {
+        toast.error(data.message);
       }
     } catch (error) {
       toast.error(error.message);
     }
-  }
+  };
 
   const completeAppointment = async (appointmentId) => {
-      try {
-
-        const {data} = await axios.post(backendUrl + '/api/v1/doctor/complete-appointment', {appointmentId}, {
+    try {
+      const { data } = await axios.post(
+        backendUrl + "/api/v1/doctor/complete-appointment",
+        { appointmentId },
+        {
           headers: {
-            doctorToken
-          }
-        })
-
-        if(data.success){
-          toast.success(data.success);
-          getAppointments();
-        }else{
-          toast.error(data.message);
+            doctorToken,
+          },
         }
-        
-      } catch (error) {
-         console.log(error);
-         toast.error(error.message);
+      );
+
+      if (data.success) {
+        toast.success(data.success);
+        getAppointments();
+      } else {
+        toast.error(data.message);
       }
-  }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
 
   const cancelAppointment = async (appointmentId) => {
-      try {
-
-        const {data} = await axios.post(backendUrl + '/api/v1/doctor/cancel-appointment', {appointmentId}, {
+    try {
+      const { data } = await axios.post(
+        backendUrl + "/api/v1/doctor/cancel-appointment",
+        { appointmentId },
+        {
           headers: {
-            doctorToken
-          }
+            doctorToken,
+          },
+        }
+      );
+
+      if (data.success) {
+        toast.success(data.success);
+        getAppointments();
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
+
+  const getDashData = async () => {
+     try {
+        const {data} = await axios.get(backendUrl + 'api/v1/doctor/dashboard', {
+          headers: {doctorToken}
         })
 
         if(data.success){
-          toast.success(data.success);
-          getAppointments();
+          setDashData(data.dashData);
         }else{
           toast.error(data.message);
         }
-        
-      } catch (error) {
-         console.log(error);
-         toast.error(error.message);
-      }
+
+     } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+     }
   }
 
-   const  value = {
-      doctorToken,
-      setDoctorToken,
-      backendUrl,
-      appointments,
-      setAppointments,
-      getAppointments,
-      completeAppointment,
-      cancelAppointment,
-   }
+  const value = {
+    doctorToken,
+    setDoctorToken,
+    backendUrl,
+    appointments,
+    setAppointments,
+    getAppointments,
+    completeAppointment,
+    cancelAppointment,
+    dashData, 
+    setDashData, 
+    getDashData
+  };
 
-   return (
-    <DoctorContext.Provider value={value}> 
+  return (
+    <DoctorContext.Provider value={value}>
       {props.children}
     </DoctorContext.Provider>
-   )
-}
+  );
+};
 
 export default DoctorContextProvider;
-  
