@@ -21,10 +21,10 @@ const Contact = () => {
             54709 Willms Station <br /> Suite 350, Washington, USA
           </p>
           <p className="text-gray-500">
-            Tel: (415) 555‑0132 <br /> Email: greatstackdev@gmail.com
+            Tel: (+91) 9351646145 <br /> Email: sanjayrai33724@gmail.com
           </p>
           <p className="font-semibold text-lg text-gary-600">
-            Careers at PRESCRIPTO
+            Careers at Amwell
           </p>
           <p className="text-gray-500">
             Learn more about our teams and job openings.
