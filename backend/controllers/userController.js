@@ -128,6 +128,8 @@ const updateProfile = async (req, res) => {
   try {
     const { userId, name, phone, address, dob, gender } = req.body;
     const imageFile = req.file;
+    console.log(imageFile);
+    console.log({ userId, name, phone, address, dob, gender })
 
     if (!name || !phone || !dob || !gender) {
       return res.status(400).json({
@@ -136,7 +138,10 @@ const updateProfile = async (req, res) => {
       });
     }
 
-    await User.findByIdAndUpdate(userId, {
+   
+   
+
+   const user = await User.findByIdAndUpdate(userId, {
       name,
       phone,
       address: JSON.parse(address),
@@ -144,17 +149,22 @@ const updateProfile = async (req, res) => {
       gender,
     });
 
-    if (imageFile) {
+     let imageUrl;
+
+     if (imageFile) {
       const imageUpload = await cloudinary.uploader.upload(imageFile.path, {
         resource_type: "image",
       });
       const imageURL = imageUpload.secure_url;
 
-      await User.findByIdAndUpdate(userId, { image: imageURL });
+     imageUrl = await User.findByIdAndUpdate(userId, { image: imageURL });
     }
-
+   
+  
     res.status(200).json({
       success: true,
+      user,
+      imageUrl,
       message: "Profile Updated",
     });
   } catch (error) {
