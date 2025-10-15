@@ -51,7 +51,7 @@ function DoctorDashboard() {
               <p className="font-semibold">Latest Bookings</p>
             </div>
             <div className="pt-4 border border-t-0">
-              {dashboardData.latestAppointments.map((item, idx) => (
+              {dashboardData?.latestAppointments?.map((item, idx) => (
                 <div
                   className="flex items-center px-6 py-3 gap-3 hover:bg-gray-100"
                   key={idx}
